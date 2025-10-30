@@ -69,13 +69,13 @@ export class AuthController {
   }
 
   // POST /api/auth/refresh
-  // Renova o access token usando refresh token
+  // Renova token do usuário usando seu refresh token
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard) // Guard que requer que o usuário já esteja autenticado
   @ApiBearerAuth() // Documenta no Swagger que é necessário um Bearer token na requisição
   @ApiOperation({
-    summary: 'Renova o access token do usuário usando seu refresh token',
+    summary: 'Renova o token do usuário usando seu refresh token',
   })
   @ApiResponse({ status: 200, description: 'Token renovado com sucesso!' })
   @ApiResponse({ status: 401, description: 'Refresh token inválido' })
