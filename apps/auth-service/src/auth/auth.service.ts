@@ -12,7 +12,6 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entity/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
@@ -170,10 +169,6 @@ export class AuthService {
     const refreshExpiration = this.configService.getOrThrow(
       'JWT_REFRESH_EXPIRATION',
     );
-
-    if (!jwtConstants.secret) {
-      throw new Error('JWT_SECRET não configurado');
-    }
 
     const [accessToken, refreshToken] = await Promise.all([
       // Access token com expiração curta
