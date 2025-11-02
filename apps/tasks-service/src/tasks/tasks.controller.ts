@@ -79,4 +79,19 @@ export class TasksController {
   ) {
     return await this.tasksService.delete(payload.id, payload.userId);
   }
+
+  // Lista comentários
+  @MessagePattern('tasks.comments.findAll')
+  async findComments(
+    @Payload()
+    payload: {
+      taskId: string;
+      pagination: PaginationQueryDto;
+    },
+  ) {
+    return await this.tasksService.findComments(
+      payload.taskId,
+      payload.pagination,
+    );
+  }
 }

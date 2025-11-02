@@ -14,6 +14,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { HistoryAction, TaskHistory } from './entity/task-history.entity';
 import { ClientProxy } from '@nestjs/microservices';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { Comment } from './entity/comment.entity';
 
 @Injectable()
 export class TasksService {
@@ -23,6 +24,9 @@ export class TasksService {
 
     @InjectRepository(TaskHistory)
     private historyRepository: Repository<TaskHistory>,
+
+    @InjectRepository(Comment)
+    private commentRepository: Repository<Comment>,
 
     // Cliente RabbitMQ para publicar eventos
     @Inject('EVENTS_SERVICE')
@@ -221,6 +225,29 @@ export class TasksService {
     await this.taskRepository.remove(task);
 
     return { message: 'Tarefa deletada com sucesso' };
+  }
+
+  // Lista comentários de uma tarefa (com paginação)
+  async findComments(taskId: string, pagination: PaginationQueryDto) {
+    const { page = 1, size = 10 } = pagination;
+
+    // Verifica se task existe
+    await this.findOne(taskId);
+
+    const [items, total] = await this.commentRepository.findAndCount({
+      where: { taskId },
+      skip: (page - 1) * size,
+      take: size,
+      order: { createdAt: 'DESC' },
+    });
+
+    return {
+      items,
+      total,
+      page,
+      size,
+      totalPages: Math.ceil(total / size),
+    };
   }
 
   // Cria registro de histórico

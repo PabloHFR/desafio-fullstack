@@ -32,6 +32,8 @@ import { TaskResponseDto } from './dto/task-response.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { CreateTaskResponseDto } from './dto/create-task-response.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { CommentsQueryDto } from './dto/comments-query.dto';
+import { CommentResponseDto } from './dto/comment-response.dto';
 
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -202,6 +204,34 @@ export class TasksController {
       this.tasksClient.send('tasks.delete', {
         id,
         userId: req.user.userId,
+      }),
+    );
+  }
+
+  // GET /api/tasks/:id/comments
+  // Lista comentários de uma tarefa
+  @Get(':id/comments')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Lista comentários de uma tarefa' })
+  @ApiParam({ name: 'id', type: String, description: 'UUID da tarefa' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'size', required: false, type: Number, example: 10 })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de comentários retornada com sucesso',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Tarefa não encontrada',
+  })
+  async findComments(
+    @Param('id') taskId: string,
+    @Query(ValidationPipe) pagination: CommentsQueryDto,
+  ) {
+    return await firstValueFrom<CommentResponseDto>(
+      this.tasksClient.send('tasks.comments.findAll', {
+        taskId,
+        pagination,
       }),
     );
   }
