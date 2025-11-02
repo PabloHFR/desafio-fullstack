@@ -1,4 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
 
@@ -8,6 +13,7 @@ import { FilterTasksDto } from './dto/filter-tasks.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { HistoryAction, TaskHistory } from './entity/task-history.entity';
 import { ClientProxy } from '@nestjs/microservices';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -127,6 +133,69 @@ export class TasksService {
       taskId: task.id,
       title: task.title,
       createdBy: user.userId,
+      assignedTo: task.assignedTo,
+      timestamp: new Date().toISOString(),
+    });
+
+    return task;
+  }
+
+  // Atualiza uma tarefa existente
+  async update(
+    id: string,
+    updateTaskDto: UpdateTaskDto,
+    user: {
+      userId: string;
+      username: string;
+    },
+  ) {
+    const task = await this.findOne(id);
+
+    if (!task) {
+      throw new NotFoundException('Tarefa não encontrada');
+    }
+
+    // Verifica permissão (apenas criador pode editar)
+    if (task.createdBy !== user.userId) {
+      throw new ForbiddenException(
+        'Você não tem permissão para editar esta tarefa',
+      );
+    }
+
+    // Captura valores antigos apra histórico
+    const oldValues: Record<string, any> = {};
+    Object.keys(updateTaskDto).forEach((key) => {
+      oldValues[key] = task[key as keyof Task];
+    });
+
+    // Atualiza campos
+    Object.assign(task, updateTaskDto);
+    await this.taskRepository.save(task);
+
+    // Registro de alterações no histórico
+    for (const [field, newValue] of Object.entries(updateTaskDto)) {
+      if (oldValues[field] !== newValue) {
+        await this.createHistory({
+          taskId: task.id,
+          action:
+            field === 'status'
+              ? HistoryAction.STATUS_CHANGED
+              : HistoryAction.UPDATED,
+          userId: user.userId,
+          username: user.username,
+          field,
+          oldValue: JSON.stringify(oldValues[field]),
+          newValue: JSON.stringify(newValue),
+        });
+      }
+    }
+
+    // Publica evento
+    this.eventsClient.emit('task.updated', {
+      taskId: task.id,
+      title: task.title,
+      updatedBy: user.userId,
+      changes: updateTaskDto,
       assignedTo: task.assignedTo,
       timestamp: new Date().toISOString(),
     });

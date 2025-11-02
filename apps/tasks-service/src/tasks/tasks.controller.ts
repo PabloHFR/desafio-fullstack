@@ -4,6 +4,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { FilterTasksDto } from './dto/filter-tasks.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -45,5 +46,25 @@ export class TasksController {
     },
   ) {
     return await this.tasksService.create(payload.createTaskDto, payload.user);
+  }
+
+  // Atualiza uma tarefa
+  @MessagePattern('tasks.update')
+  async update(
+    @Payload()
+    payload: {
+      id: string;
+      updateTaskDto: UpdateTaskDto;
+      user: {
+        userId: string;
+        username: string;
+      };
+    },
+  ) {
+    return await this.tasksService.update(
+      payload.id,
+      payload.updateTaskDto,
+      payload.user,
+    );
   }
 }

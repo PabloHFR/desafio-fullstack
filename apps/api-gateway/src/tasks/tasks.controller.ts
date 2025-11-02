@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Patch,
   Query,
   Req,
   UseGuards,
@@ -29,6 +30,7 @@ import { PaginatedTasksResponseDto } from './dto/paginated-tasks-response.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { CreateTaskResponseDto } from './dto/create-task-response.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -136,6 +138,38 @@ export class TasksController {
     return await firstValueFrom(
       this.tasksClient.send<CreateTaskResponseDto>('tasks.create', {
         createTaskDto,
+        user: req.user,
+      }),
+    );
+  }
+
+  // PATCH /api/tasks/:id
+  // Atualiza uma tarefa
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Atualiza uma tarefa' })
+  @ApiParam({ name: 'id', type: String, description: 'UUID da tarefa' })
+  @ApiResponse({
+    status: 200,
+    description: 'Tarefa atualizada com sucesso',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Sem permissão para editar esta tarefa',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Tarefa não encontrada',
+  })
+  async update(
+    @Param('id') id: string,
+    @Body(ValidationPipe) updateTaskDto: UpdateTaskDto,
+    @Req() req: { user: { userId: string; username: string } },
+  ) {
+    return await firstValueFrom<TaskResponseDto>(
+      this.tasksClient.send('tasks.update', {
+        id,
+        updateTaskDto,
         user: req.user,
       }),
     );
