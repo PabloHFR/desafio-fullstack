@@ -525,7 +525,11 @@ importers:
 
   packages/tsconfig: {}
 
-  packages/types: {}
+  packages/types:
+    devDependencies:
+      '@monorepo/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
 
   packages/utils: {}
 

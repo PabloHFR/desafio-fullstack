@@ -6,12 +6,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import { HistoryAction } from '@monorepo/types';
 
 import { Task } from './entity/tasks.entity';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { FilterTasksDto } from './dto/filter-tasks.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { HistoryAction, TaskHistory } from './entity/task-history.entity';
+import { TaskHistory } from './entity/task-history.entity';
 import { ClientProxy } from '@nestjs/microservices';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Comment } from './entity/comment.entity';
