@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, MoreThan } from 'typeorm';
 import { Notification, NotificationType } from './entities/notification.entity';
 
 @Injectable()
@@ -28,5 +28,20 @@ export class NotificationsService {
     );
 
     return await this.notificationRepository.save(notifications);
+  }
+
+  // Busca notificações recentes de um usuário ao se conectar ao WS (últimas 24h)
+  async findRecent(userId: string, hoursAgo: number = 24) {
+    const since = new Date();
+    since.setHours(since.getHours() - hoursAgo);
+
+    return await this.notificationRepository.find({
+      where: {
+        userId,
+        createdAt: MoreThan(since),
+      },
+      order: { createdAt: 'DESC' },
+      take: 20, // Últimas 20 notificações
+    });
   }
 }

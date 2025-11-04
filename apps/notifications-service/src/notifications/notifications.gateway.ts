@@ -26,7 +26,7 @@ export class NotificationsGateway
   constructor(private notificationsService: NotificationsService) {}
 
   // Quando cliente conecta, envia notificações recentes
-  handleConnection(client: Socket) {
+  async handleConnection(client: Socket) {
     this.logger.log(`Cliente conectado: ${client.id}`);
 
     const userId = client.handshake.query.userId as string;
@@ -34,6 +34,20 @@ export class NotificationsGateway
     if (userId) {
       this.userSockets.set(userId, client.id);
       this.logger.log(`Usuário ${userId} mapeado para socket ${client.id}`);
+
+      // Envia as notificações das últimas 24h ao conectar
+      const recentNotifications =
+        await this.notificationsService.findRecent(userId);
+
+      if (recentNotifications.length > 0) {
+        client.emit('notifications:history', {
+          notifications: recentNotifications,
+          count: recentNotifications.length,
+        });
+        this.logger.log(
+          `Enviadas ${recentNotifications.length} notificações recentes para ${userId}`,
+        );
+      }
     } else {
       this.logger.warn(`Cliente ${client.id} conectou sem userId`);
     }
