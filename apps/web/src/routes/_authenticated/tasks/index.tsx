@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
+import { Header } from "@/components/header/Header";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/tasks/")({
@@ -7,10 +6,9 @@ export const Route = createFileRoute("/_authenticated/tasks/")({
 });
 
 function RouteComponent() {
-  const { logout } = useAuth();
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center">
-      <Button onClick={logout}>Sair da conta!</Button>
+    <div className="flex h-full flex-1 flex-col gap-8 py-6 px-12">
+      <Header />
     </div>
   );
 }
