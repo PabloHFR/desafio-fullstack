@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,6 +12,7 @@ import type { Row } from "@tanstack/react-table";
 import type { Task } from "@monorepo/types";
 import { DeleteTaskDialog } from "./DeleteTaskDialog";
 import { EditTaskDialog } from "./EditTaskDialog";
+import { useNavigate } from "@tanstack/react-router";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -20,6 +21,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const navigate = useNavigate();
   const task = row.original as Task;
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -37,6 +39,12 @@ export function DataTableRowActions<TData>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuItem
+            onClick={() => navigate({ to: `/tasks/${task.id}` })}
+          >
+            <Eye />
+            Ver mais
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
             <Pencil />
             Editar

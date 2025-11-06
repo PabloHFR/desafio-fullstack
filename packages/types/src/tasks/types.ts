@@ -52,7 +52,7 @@ export interface TaskHistory {
   id: string;
   action: HistoryAction;
   userId: string;
-  userName: string;
+  username: string;
   field?: string;
   oldValue?: string;
   newValue?: string;
