@@ -58,16 +58,17 @@ export class TasksService {
     if (search) {
       const queryBuilder = this.taskRepository
         .createQueryBuilder('task')
-        .where('task.title ILIKE :search OR task.description ILIKE :search', {
-          search: `%${search}`,
-        });
+        .where(
+          'LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search)',
+          { search: `%${search}%` },
+        );
 
       if (status) queryBuilder.andWhere('task.status = :status', { status });
       if (priority)
         queryBuilder.andWhere('task.priority = :priority', { priority });
       if (assignedTo) {
         queryBuilder.andWhere('task.assignedTo LIKE :assignedTo', {
-          assignedTo: `%${assignedTo}`,
+          assignedTo: `%${assignedTo}%`,
         });
       }
 
