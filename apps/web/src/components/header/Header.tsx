@@ -1,3 +1,4 @@
+import { NotificationBell } from "../notifications/NotificationBell";
 import { UserNav } from "./UserNav";
 
 export function Header() {
@@ -10,6 +11,7 @@ export function Header() {
         <p className="text-muted-foreground">Aqui está sua lista de tarefas</p>
       </div>
       <div className="flex items-center gap-2">
+        <NotificationBell />
         <UserNav />
       </div>
     </div>
