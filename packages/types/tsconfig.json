@@ -1,13 +1,15 @@
 {
   "extends": "@monorepo/tsconfig/base.json",
   "compilerOptions": {
-    "outDir": "dist",
     "rootDir": "src",
+    "outDir": "dist",
     "declaration": true,
-    "emitDeclarationOnly": false,
-    "module": "CommonJS",
-    "target": "ES2020",
-    "moduleResolution": "node"
+    "declarationMap": true,
+    "composite": true,
+    "noEmit": false,
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Bundler"
   },
   "include": ["src"]
 }

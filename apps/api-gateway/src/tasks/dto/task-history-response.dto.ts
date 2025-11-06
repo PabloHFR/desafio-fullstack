@@ -1,5 +1,13 @@
-import { HistoryAction } from '@monorepo/types';
 import { ApiProperty } from '@nestjs/swagger';
+
+export enum HistoryAction {
+  CREATED = 'CREATED',
+  UPDATED = 'UPDATED',
+  STATUS_CHANGED = 'STATUS_CHANGED',
+  ASSIGNED = 'ASSIGNED',
+  UNASSIGNED = 'UNASSIGNED',
+  COMMENTED = 'COMMENTED',
+}
 
 export class TaskHistoryResponseDto {
   @ApiProperty({

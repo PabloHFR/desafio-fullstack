@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { connectWebSocket, disconnectWebSocket } from "@/lib/websocket";
-import type { UserResponse } from "@monorepo/types/src/index";
+import type { UserResponse } from "@monorepo/types";
 
 // Store de autenticação com Zustand
 // - Persiste no localStorage

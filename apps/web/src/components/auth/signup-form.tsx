@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
-import { registerSchema, type RegisterFormData } from "@/schemas/validation";
+import { registerSchema, type RegisterFormData } from "@/schemas/auth";
 import { Loader2 } from "lucide-react";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {

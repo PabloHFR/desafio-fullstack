@@ -7,7 +7,7 @@ import type {
   AuthResponse,
   LoginRequest,
   RegisterRequest,
-} from "@monorepo/types/src";
+} from "@monorepo/types";
 
 export const useAuth = () => {
   const navigate = useNavigate();
