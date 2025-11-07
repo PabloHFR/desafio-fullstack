@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
-import { HistoryAction } from '@monorepo/types';
 
 import { Task } from './entity/tasks.entity';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
@@ -17,6 +16,15 @@ import { ClientProxy } from '@nestjs/microservices';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Comment } from './entity/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
+
+export enum HistoryAction {
+  CREATED = 'CREATED',
+  UPDATED = 'UPDATED',
+  STATUS_CHANGED = 'STATUS_CHANGED',
+  ASSIGNED = 'ASSIGNED',
+  UNASSIGNED = 'UNASSIGNED',
+  COMMENTED = 'COMMENTED',
+}
 
 @Injectable()
 export class TasksService {
@@ -50,16 +58,17 @@ export class TasksService {
     if (search) {
       const queryBuilder = this.taskRepository
         .createQueryBuilder('task')
-        .where('task.title ILIKE :search OR task.description ILIKE :search', {
-          search: `%${search}`,
-        });
+        .where(
+          'LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search)',
+          { search: `%${search}%` },
+        );
 
       if (status) queryBuilder.andWhere('task.status = :status', { status });
       if (priority)
         queryBuilder.andWhere('task.priority = :priority', { priority });
       if (assignedTo) {
         queryBuilder.andWhere('task.assignedTo LIKE :assignedTo', {
-          assignedTo: `%${assignedTo}`,
+          assignedTo: `%${assignedTo}%`,
         });
       }
 

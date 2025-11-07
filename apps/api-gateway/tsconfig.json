@@ -1,5 +1,4 @@
 {
-  "extends": "@monorepo/tsconfig/base.json",
   "compilerOptions": {
     "module": "nodenext",
     "moduleResolution": "nodenext",

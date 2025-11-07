@@ -12,12 +12,12 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { AuthResponse, LogoutResponse, RefreshResponse } from '@monorepo/types';
 
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token';
+import { AuthResponse, LogoutResponse, RefreshResponse } from 'types/types';
 
 @Controller('auth')
 export class AuthController {
