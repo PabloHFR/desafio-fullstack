@@ -217,7 +217,7 @@ Auth Service            Tasks Service
 | **Notifications Service** | 7 horas      |
 | **Web (Frontend)**        | 12 horas     |
 | **Docker + Documentação** | 4 horas      |
-| **Total**                 | **44 horas** |
+| **Total**                 | **43 horas** |
 
 ---
 
